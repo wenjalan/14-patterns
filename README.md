@@ -1,7 +1,7 @@
 # The 14 Programming Interview Patterns
 ## Index
-1. Sliding Window
-2. Two Pointers
+1. [Sliding Window](#1-sliding-window)
+2. [Two Pointers](#2-two-pointers)
 3. Fast Pointer, Slow Pointer
 4. Merge Intervals
 5. Cyclic Sort 
