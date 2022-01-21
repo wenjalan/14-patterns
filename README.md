@@ -466,11 +466,179 @@ Also referred to as the Hare & Tortoise algorithm. Uses two pointers to traverse
 * Problem mentions needing a position of an element or the length of a linkedlist
 
 ### Code Template
+```java
+public ListNode fastAndSlow(ListNode head) {
+    // initialize two pointers
+    ListNode slow = head;
+    ListNode fast = head;
+
+    // advance the fast pointer at twice the speed as the slow
+    while (fast != null && fast.next != null) {
+        slow = slow.next;
+        fast = fast.next.next;
+    }
+
+    // when the fast pointer hits the end, the slow pointer will be at the middle
+    ListNode mid = slow;
+}
+```
+
+Utility code to reverse a LinkedList
+```java
+// reverses a LinkedList given a head
+public ListNode reverse(ListNode head) {
+    ListNode prev = null;
+    while (head != null) {
+        ListNode next = head.next;
+        head.next = prev;
+        prev = head;
+        head = next;
+    }
+    return prev;
+}
+```
 
 ### Example Problems
-### (LinkedList Cycle (easy))[]
-### (Palindrome LinkedList (medium))[]
-### (Cycle in a Circular Array (hard))[]
+### (LinkedList Cycle (easy))[https://leetcode.com/problems/linked-list-cycle/]
+Given head, the head of a linked list, determine if the linked list has a cycle in it.
+
+There is a cycle in a linked list if there is some node in the list that can be reached again by continuously following the next pointer. Internally, pos is used to denote the index of the node that tail's next pointer is connected to. Note that pos is not passed as a parameter.
+
+Return true if there is a cycle in the linked list. Otherwise, return false.
+```java
+public boolean hasCycle(ListNode head) { 
+    // initialie two pointers to the head
+    ListNode slow = head;
+    ListNode fast = head;
+    
+    // advance slow by 1 each time, and fast by 2 each time
+    // condition runs while fast and fast.next both exist
+    while (fast != null && fast.next != null) {
+        slow = slow.next;
+        fast = fast.next.next;
+        
+        // if p1 and p2 meet, there is a loop
+        if (slow == fast) return true;
+    }
+    
+    // if p1 and p2 both reached the end, there was no loop
+    return false;
+}
+```
+### (Palindrome LinkedList (medium))[https://leetcode.com/problems/palindrome-linked-list/]
+```java
+public boolean isPalindrome(ListNode head) {
+    // initialize slow and fast to head
+    ListNode fast = head; 
+    ListNode slow = head;
+    
+    // find the middle of the list
+    // let fast advance 2 steps and slow advance 1
+    // once fast reaches the end, slow will reach the middle
+    while (fast != null && fast.next != null) {
+        fast = fast.next.next;
+        slow = slow.next;
+    }
+    
+    // if fast.next was null, the list has an odd number of nodes
+    // advance slow by 1 to make it the larger half of the list
+    if (fast != null) {
+        slow = slow.next;
+    }
+    
+    // reverse the list headed by slow to get two lists to test for identicality
+    ListNode l1 = reverse(slow);
+    ListNode l2 = head;
+    
+    // test for identicality
+    while (l1 != null) {
+        if (l1.val != l2.val) return false;
+        l1 = l1.next;
+        l2 = l2.next;
+    }
+    
+    // if all values matched return true
+    return true;
+}
+
+// reverses a LinkedList given a head
+public ListNode reverse(ListNode head) {
+    ListNode prev = null;
+    while (head != null) {
+        ListNode next = head.next;
+        head.next = prev;
+        prev = head;
+        head = next;
+    }
+    return prev;
+}
+```
+### (Cycle in a Circular Array (hard))[https://leetcode.com/problems/circular-array-loop/]
+You are playing a game involving a circular array of non-zero integers nums. Each nums[i] denotes the number of indices forward/backward you must move if you are located at index i:
+
+If nums[i] is positive, move nums[i] steps forward, and
+If nums[i] is negative, move nums[i] steps backward.
+Since the array is circular, you may assume that moving forward from the last element puts you on the first element, and moving backwards from the first element puts you on the last element.
+
+A cycle in the array consists of a sequence of indices seq of length k where:
+
+Following the movement rules above results in the repeating index sequence seq[0] -> seq[1] -> ... -> seq[k - 1] -> seq[0] -> ...
+Every nums[seq[j]] is either all positive or all negative.
+k > 1
+Return true if there is a cycle in nums, or false otherwise.
+```java
+public boolean circularArrayLoop(int[] nums) {
+    // if length of 1
+    if (nums.length == 1) return false;
+    
+    // for every possible starting position
+    int n = nums.length;
+    for (int i = 0; i < n; i++) {
+        // if i == 0, we already checked this spot
+        if (nums[i] == 0) continue;
+        
+        // slow and fast pointers, fast is initialized to the next move at start
+        int slow = i;
+        int fast = nextIndex(nums, i);
+        
+        // while slow and fast aren't visited
+        while (nums[fast] * nums[i] > 0 && nums[nextIndex(nums, fast)] * nums[i] > 0) {
+            // if slow and fast are the same
+            if (slow == fast) {
+                // if this was a single element loop
+                if (slow == nextIndex(nums, slow)) {
+                    // ignore
+                    break;
+                }
+                
+                // if not, return true
+                return true;
+            }
+            
+            // advance pointers
+            slow = nextIndex(nums, slow);
+            fast = nextIndex(nums, nextIndex(nums, fast));
+        }
+        
+        // if no loop was found starting at i, set visited elements to 0
+        slow = i;
+        int move = nums[i];
+        while (nums[slow] * move > 0) {
+            int next = nextIndex(nums, slow);
+            nums[slow] = 0;
+            slow = next;
+        }
+    }
+    
+    // if no loops were found throughout, return false
+    return false;
+}
+
+int nextIndex(int[] nums, int i) {
+    int n = nums.length;
+    return i + nums[i] >= 0? (i + nums[i]) % n: n + ((i + nums[i]) % n);
+}
+```
 
 ## 4. Merge Intervals
 ### Overview
@@ -481,10 +649,105 @@ Problems that deal with overlapping intervals. Usually, asked to find overlappin
 * The term "overlapping intervals" is used
 
 ### Code Template
+```java
+public int[][] merge(int[][] intervals) {
+    // if there's one interval return it
+    if (intervals.length <= 1) return intervals;
+    
+    // sort the intervals by their starting positions
+    Arrays.sort(intervals, (i1, i2) -> Integer.compare(i1[0], i2[0]));
+    
+    // a list to store answers
+    List<int[]> ans = new LinkedList<>();
+    
+    // an interval to start with
+    int[] newInterval = intervals[0];
+    ans.add(newInterval);
+    
+    // for each interval
+    for (int[] interval : intervals) {
+        // if these intervals overlap, join them
+        if (newInterval[1] >= interval[0]) {
+            newInterval[1] = Math.max(newInterval[1], interval[1]);
+        }
+        // otherwise, add new interval to the list
+        else {
+            newInterval = interval;
+            ans.add(newInterval);
+        }
+    }
+    
+    // return answer
+    return ans.toArray(new int[ans.size()][]);
+}
+```
 
 ### Example Problems
-### (Intervals Intersection (medium))[]
-### (Maximum CPU Load (hard))[]
+### (Intervals Intersection (medium))[https://leetcode.com/problems/interval-list-intersections/]
+```java
+public int[][] intervalIntersection(int[][] a, int[][] b) {
+    // if either list is empty return empty
+    if (a.length == 0 || b.length == 0) return new int[0][0];
+    
+    // a list of intervals created by the intersection of a and b
+    List<int[]> ans = new LinkedList<>();
+    
+    // two pointers, start at 0
+    int i = 0;
+    int j = 0;
+    
+    // while we haven't reached the end of either list
+    while (i < a.length && j < b.length) {
+        // find the start with the furthest right value
+        int start = Math.max(a[i][0], b[j][0]);
+        
+        // find the end wit hthe furthest left value
+        int end = Math.min(a[i][1], b[j][1]);
+        
+        // if the start of the interval is before the end
+        // an intersection has occurred, add it to the answer
+        if (start <= end) ans.add(new int[] {start, end});
+        
+        // if the end of a is greater than the end of b, move b
+        if (a[i][1] > b[j][1]) j++;
+        
+        // otherwise move a
+        else i++;
+    }
+    
+    // return ans
+    return ans.toArray(new int[ans.size()][2]);
+}
+```
+### (Task Scheduler (hard))[https://leetcode.com/problems/task-scheduler/]
+```java
+// this one's just mathematics
+public int leastInterval(char[] tasks, int n) {
+    // map of instances of tasks
+    // keep track of what the max n instances of tasks was, as well as how many parts have that number of tasks
+    Map<Character, Integer> map = new TreeMap<>();
+    int max = 0;
+    int maxCount = 0;
+    for (char c : tasks) {
+        map.put(c, map.getOrDefault(c, 0) + 1);
+        if (max == map.get(c)) {
+            maxCount++;
+        }
+        else if (max < map.get(c)) {
+            max = map.get(c);
+            maxCount = 1;
+        }
+    }
+    
+    // perform mathematics
+    int partCount = max - 1;
+    int partLen = n - (maxCount - 1);
+    int emptySlots = partCount * partLen;
+    int availableTasks = tasks.length - max * maxCount;
+    int idles = Math.max(0, emptySlots - availableTasks);
+    return tasks.length + idles;
+}
+```
 
 ## 5.
 ### Overview
