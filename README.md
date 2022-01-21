@@ -24,6 +24,58 @@ Sliding Window problems will ask you to perform an operation on a "window" of an
 * Asked to identify longest/shortest substring, subarray, or a desired value
 * A brute force solution is of N^2 time
 
+### Code Template
+```java
+// example code to be modified; currently returns length of largest substring with target unique chars
+public int windowTraversal(String str, int target) {
+    // use of max or min value will depend on problem
+    int max = 0;
+    int min = 0;
+
+    // many string-based probems will require a CharMap
+    Map<Character, Integer> map = new TreeMap<>();
+    for (char c : str) {
+        map.put(c, map.getOrDefault(c, 0) + 1);
+    }
+
+    // left and right pointers define the boundaries of the window
+    int left = 0;
+    int right = 0;
+
+    // variables to track progress to target
+    int distinct = 0;
+
+    // iterate through the entire string, adjusting left and right pointers
+    while (right < str.length()) {
+        // if progress variable should increase, expand window right
+        if (distinct < target) {
+            // perform operations to track progress state here
+
+            // expand window right
+            right++;
+        }
+        // otherwise if progress varaible should decrease, shrink window left
+        else {
+            // perform operations to track progress state here
+
+            // shrink window left
+            left++;
+        }
+
+        // check if current state meets target
+        if (distinct == target) {
+            // update min/max
+            min = Math.min(min, right - left);
+            max = Math.max(max, right - left);
+        }
+    }
+
+    // return an answer
+    // return max;
+    return min;
+}
+```
+
 ### Example Problems
 ### [Maximum sum subarray of size K](https://leetcode.com/problems/maximum-subarray/) (easy)  
 
@@ -237,7 +289,251 @@ Two Pointers problems will use two pointers to iterate through data structures u
 * Provided data is a sorted array or list, and asked to find a set of elements that fit certain constraints
 * Set of elements to be identified is a pair, triplet, or subarray
 
+### Code Template
+```java
+public List<Integer> twoPointers(int[] sortedArray, int target) {
+    // you may have to sort the array
+    Arrays.sort(sortedArray);
+
+    // initialize pointers to two ends of array
+    int i = 0;
+    int j = sortedArray.length - 1;
+
+    // use the sorted property of the array to move pointers appropriately
+    while (i < j) {
+        if (i + j == target) {
+            return Arrays.asList(i, j);
+        }
+        else if (i + j > target) {
+            j--;
+        }
+        else {
+            i++;
+        }
+    }
+}
+```
+
 ### Example Problems
-* [Squaring a sorted array](https://leetcode.com/problems/squares-of-a-sorted-array/) (easy)
-* [Triplets that sum to zero](https://leetcode.com/problems/3sum/) (medium)
-* [Comparing strings that contain backspaces](https://leetcode.com/problems/backspace-string-compare/) (medium)
+### [Squaring a sorted array](https://leetcode.com/problems/squares-of-a-sorted-array/) (easy)
+
+Given an integer array nums sorted in non-decreasing order, return an array of the squares of each number sorted in non-decreasing order.
+
+```java
+public int[] sortedSquares(int[] nums) {
+    // answer array
+    int[] ans = new int[nums.length];
+    
+    // the next index to populate in the answer array
+    int i = nums.length - 1;
+    
+    // left pointer points to start, right points to end
+    int left = 0;
+    int right = nums.length - 1;
+    
+    // while the two pointers haven't crossed
+    while (left <= right) {
+        // get abs value of left and right
+        int absLeft = Math.abs(nums[left]);
+        int absRight = Math.abs(nums[right]);
+        
+        // if left is smaller, square left and increment
+        if (absLeft > absRight) {
+            ans[i] = (int) Math.pow(absLeft, 2);
+            left++;
+        }
+        else {
+            ans[i] = (int) Math.pow(absRight, 2);
+            right--;
+        }
+        i--;
+    }
+    
+    // return ans 
+    return ans;
+}
+```
+
+### [Triplets that sum to zero](https://leetcode.com/problems/3sum/) (medium)
+Given an integer array nums, return all the triplets [nums[i], nums[j], nums[k]] such that i != j, i != k, and j != k, and nums[i] + nums[j] + nums[k] == 0.
+
+Notice that the solution set must not contain duplicate triplets.
+
+```java
+public List<List<Integer>> threeSum(int[] nums) {
+    // sort input array
+    Arrays.sort(nums);
+    
+    // answer array
+    List<List<Integer>> ans = new LinkedList<>();
+    
+    // for every possible first element of a triplet
+    for (int i = 0; i + 2 < nums.length; i++) {
+        // skip duplicate i
+        if (i > 0 && nums[i] == nums[i - 1]) continue;
+        
+        // two additional pointers, one at the next element
+        // and one at the end of the array
+        int j = i + 1;
+        int k = nums.length - 1;
+        int target = -nums[i];
+        while (j < k) {
+            // if the values at these pointers equal 0
+            if (nums[i] + nums[j] + nums[k] == 0) {
+                // add this set to the answer
+                ans.add(Arrays.asList(nums[i], nums[j], nums[k]));
+                // move both pointers
+                j++;
+                k--;
+                
+                // skip duplicates
+                while (j < k && nums[j] == nums[j - 1]) j++;
+                while (j < k && nums[k] == nums[k + 1]) k--;
+            }
+            // if the sum of values at j and k is greater than the difference to i
+            else if (nums[j] + nums[k] > target) {
+                // decrease k
+                k--;
+            }
+            // otherwise increase j
+            else {
+                j++;
+            }
+        }
+    }
+    
+    // return ans
+    return ans;
+}
+```
+### [Comparing strings that contain backspaces](https://leetcode.com/problems/backspace-string-compare/) (medium)
+Given two strings s and t, return true if they are equal when both are typed into empty text editors. '#' means a backspace character.
+
+Note that after backspacing an empty text, the text will continue empty.
+```java
+public boolean backspaceCompare(String s, String t) {
+    // two pointers for the ends of each string
+    int i1 = s.length() - 1;
+    int i2 = t.length() - 1;
+    
+    // counts of backspaces to skip
+    int countS = 0;
+    int countT = 0;
+    
+    // while we haven't reached the end of both strings
+    while (i1 >= 0 || i2 >= 0) {
+        // find next index on S after backspacing
+        while (i1 >= 0 && (countS > 0 || s.charAt(i1) == '#')) {
+            if (s.charAt(i1) == '#') {
+                countS++;
+            }
+            else countS--;
+            i1--;
+        }
+        
+        // get s next char
+        char sChar = i1 < 0 ? (char) 0 : s.charAt(i1);
+        
+        // do the same for t
+        while (i2 >= 0 && (countT > 0 || t.charAt(i2) == '#')) {
+            if (t.charAt(i2) == '#') countT++;
+            else countT--;
+            i2--;
+        }
+        
+        // get t next char
+        char tChar = i2 < 0 ? (char) 0 : t.charAt(i2);
+        
+        // if they aren't the same char return false;
+        if (sChar != tChar) return false;
+        
+        // continue
+        i1--;
+        i2--;
+    }
+    
+    // if we reached the end of both strings, return true
+    return true;
+}
+```
+
+## 3. Fast and Slow Pointers
+### Overview
+Also referred to as the Hare & Tortoise algorithm. Uses two pointers to traverse an array, sequence or linkedlist at different speeds. Used heavily in dealing with cyclic linkedlists or arrays. The faster pointer will always catch the slower pointer in a loop.
+
+### Common Signs
+* Problem mentions a loop in an array or linked list
+* Problem mentions needing a position of an element or the length of a linkedlist
+
+### Code Template
+
+### Example Problems
+### (LinkedList Cycle)[]
+### (Palindrome LinkedList)[]
+### (Cycle in a Circular Array)[]
+
+## 4. Merge Intervals
+### Overview
+### Common Signs
+### Code Template
+### Example Problems
+
+## 5.
+### Overview
+### Common Signs
+### Code Template
+### Example Problems
+
+## 6.
+### Overview
+### Common Signs
+### Code Template
+### Example Problems
+
+## 7.
+### Overview
+### Common Signs
+### Code Template
+### Example Problems
+
+## 8.
+### Overview
+### Common Signs
+### Code Template
+### Example Problems
+
+## 9.
+### Overview
+### Common Signs
+### Code Template
+### Example Problems
+
+## 10.
+### Overview
+### Common Signs
+### Code Template
+### Example Problems
+
+## 11.
+### Overview
+### Common Signs
+### Code Template
+### Example Problems
+
+## 12.
+### Overview
+### Common Signs
+### Code Template
+### Example Problems
+
+## 13.
+### Overview
+### Common Signs
+### Code Template
+### Example Problems
+
+## 14.
+### Overview
+### Common Signs
+### Code Template
+### Example Problems
