@@ -468,15 +468,23 @@ Also referred to as the Hare & Tortoise algorithm. Uses two pointers to traverse
 ### Code Template
 
 ### Example Problems
-### (LinkedList Cycle)[]
-### (Palindrome LinkedList)[]
-### (Cycle in a Circular Array)[]
+### (LinkedList Cycle (easy))[]
+### (Palindrome LinkedList (medium))[]
+### (Cycle in a Circular Array (hard))[]
 
 ## 4. Merge Intervals
 ### Overview
+Problems that deal with overlapping intervals. Usually, asked to find overlapping intervals or to merge intervals if they overlap.
+
 ### Common Signs
+* Problem asks to produce a list of mutually exclusive intervals
+* The term "overlapping intervals" is used
+
 ### Code Template
+
 ### Example Problems
+### (Intervals Intersection (medium))[]
+### (Maximum CPU Load (hard))[]
 
 ## 5.
 ### Overview
