@@ -2,8 +2,8 @@
 ## Index
 1. [Sliding Window](#1-sliding-window)
 2. [Two Pointers](#2-two-pointers)
-3. Fast Pointer, Slow Pointer
-4. Merge Intervals
+3. [Fast Pointer, Slow Pointer](#3-fast-and-slow-pointers)
+4. [Merge Intervals](#4-merge-intervals)
 5. Cyclic Sort 
 6. Reverse LinkedList
 7. Tree BFS
@@ -499,7 +499,7 @@ public ListNode reverse(ListNode head) {
 ```
 
 ### Example Problems
-### (LinkedList Cycle (easy))[https://leetcode.com/problems/linked-list-cycle/]
+### [LinkedList Cycle (easy)](https://leetcode.com/problems/linked-list-cycle/)
 Given head, the head of a linked list, determine if the linked list has a cycle in it.
 
 There is a cycle in a linked list if there is some node in the list that can be reached again by continuously following the next pointer. Internally, pos is used to denote the index of the node that tail's next pointer is connected to. Note that pos is not passed as a parameter.
@@ -525,7 +525,7 @@ public boolean hasCycle(ListNode head) {
     return false;
 }
 ```
-### (Palindrome LinkedList (medium))[https://leetcode.com/problems/palindrome-linked-list/]
+### [Palindrome LinkedList (medium)](https://leetcode.com/problems/palindrome-linked-list/)
 ```java
 public boolean isPalindrome(ListNode head) {
     // initialize slow and fast to head
@@ -573,7 +573,7 @@ public ListNode reverse(ListNode head) {
     return prev;
 }
 ```
-### (Cycle in a Circular Array (hard))[https://leetcode.com/problems/circular-array-loop/]
+### [Cycle in a Circular Array (hard)](https://leetcode.com/problems/circular-array-loop/)
 You are playing a game involving a circular array of non-zero integers nums. Each nums[i] denotes the number of indices forward/backward you must move if you are located at index i:
 
 If nums[i] is positive, move nums[i] steps forward, and
@@ -683,6 +683,7 @@ public int[][] merge(int[][] intervals) {
 ```
 
 ### Example Problems
+<<<<<<< HEAD
 ### (Intervals Intersection (medium))[https://leetcode.com/problems/interval-list-intersections/]
 You are given two lists of closed intervals, firstList and secondList, where firstList[i] = [starti, endi] and secondList[j] = [startj, endj]. Each list of intervals is pairwise disjoint and in sorted order.
 
@@ -691,6 +692,9 @@ Return the intersection of these two interval lists.
 A closed interval [a, b] (with a <= b) denotes the set of real numbers x with a <= x <= b.
 
 The intersection of two closed intervals is a set of real numbers that are either empty or represented as a closed interval. For example, the intersection of [1, 3] and [2, 4] is [2, 3].
+=======
+### [Intervals Intersection (medium)](https://leetcode.com/problems/interval-list-intersections/)
+>>>>>>> c67a64f9e082d98251973fc3ef24235293f1afa8
 ```java
 public int[][] intervalIntersection(int[][] a, int[][] b) {
     // if either list is empty return empty
@@ -726,12 +730,16 @@ public int[][] intervalIntersection(int[][] a, int[][] b) {
     return ans.toArray(new int[ans.size()][2]);
 }
 ```
+<<<<<<< HEAD
 ### (Task Scheduler (hard))[https://leetcode.com/problems/task-scheduler/]
 Given a characters array tasks, representing the tasks a CPU needs to do, where each letter represents a different task. Tasks could be done in any order. Each task is done in one unit of time. For each unit of time, the CPU could complete either one task or just be idle.
 
 However, there is a non-negative integer n that represents the cooldown period between two same tasks (the same letter in the array), that is that there must be at least n units of time between any two same tasks.
 
 Return the least number of units of times that the CPU will take to finish all the given tasks.
+=======
+### [Task Scheduler (hard)](https://leetcode.com/problems/task-scheduler/)
+>>>>>>> c67a64f9e082d98251973fc3ef24235293f1afa8
 ```java
 // this one's just mathematics
 public int leastInterval(char[] tasks, int n) {
