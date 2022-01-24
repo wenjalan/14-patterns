@@ -683,8 +683,7 @@ public int[][] merge(int[][] intervals) {
 ```
 
 ### Example Problems
-<<<<<<< HEAD
-### (Intervals Intersection (medium))[https://leetcode.com/problems/interval-list-intersections/]
+### [Intervals Intersection (medium)](https://leetcode.com/problems/interval-list-intersections/)
 You are given two lists of closed intervals, firstList and secondList, where firstList[i] = [starti, endi] and secondList[j] = [startj, endj]. Each list of intervals is pairwise disjoint and in sorted order.
 
 Return the intersection of these two interval lists.
@@ -692,9 +691,6 @@ Return the intersection of these two interval lists.
 A closed interval [a, b] (with a <= b) denotes the set of real numbers x with a <= x <= b.
 
 The intersection of two closed intervals is a set of real numbers that are either empty or represented as a closed interval. For example, the intersection of [1, 3] and [2, 4] is [2, 3].
-=======
-### [Intervals Intersection (medium)](https://leetcode.com/problems/interval-list-intersections/)
->>>>>>> c67a64f9e082d98251973fc3ef24235293f1afa8
 ```java
 public int[][] intervalIntersection(int[][] a, int[][] b) {
     // if either list is empty return empty
@@ -730,16 +726,12 @@ public int[][] intervalIntersection(int[][] a, int[][] b) {
     return ans.toArray(new int[ans.size()][2]);
 }
 ```
-<<<<<<< HEAD
-### (Task Scheduler (hard))[https://leetcode.com/problems/task-scheduler/]
+### [Task Scheduler (hard)](https://leetcode.com/problems/task-scheduler/)
 Given a characters array tasks, representing the tasks a CPU needs to do, where each letter represents a different task. Tasks could be done in any order. Each task is done in one unit of time. For each unit of time, the CPU could complete either one task or just be idle.
 
 However, there is a non-negative integer n that represents the cooldown period between two same tasks (the same letter in the array), that is that there must be at least n units of time between any two same tasks.
 
 Return the least number of units of times that the CPU will take to finish all the given tasks.
-=======
-### [Task Scheduler (hard)](https://leetcode.com/problems/task-scheduler/)
->>>>>>> c67a64f9e082d98251973fc3ef24235293f1afa8
 ```java
 // this one's just mathematics
 public int leastInterval(char[] tasks, int n) {
@@ -1274,26 +1266,248 @@ public List<String> letterCasePermutation(String s) {
 }
 ```
 
-## 11.
+## 11. Modified Binary Search
 ### Overview
-### Common Signs
-### Code Template
-### Example Problems
+Whenever searching is involved in a sorted array, linkedlist, or matrix, a Binary Search is the best option. Variations on this pattern exist.
 
-## 12.
-### Overview
 ### Common Signs
-### Code Template
-### Example Problems
+* The problem asks for a certain element of a sorted collection
 
-## 13.
-### Overview
-### Common Signs
 ### Code Template
-### Example Problems
+```java
+public void binarySearch(int[] elements, int target) {
+    // sort the array if not already
+    Arrays.sort(elements);
 
-## 14.
+    int start = 0;
+    int middle = elements.length / 2;
+    int end = elements.length;
+    while (elements[middle] != target) {
+        // if larger than target, move left
+        if (elements[middle] > target) {
+            start = middle + 1;
+        }
+
+        // if smaller than target, move right
+        else {
+            end = middle - 1;
+        }
+
+        // reset middle and continue
+        middle = (end - start) / 2;
+    }
+    return elements[middle];
+}
+```
+### Example Problems
+### [Order Agnostic Binary Search (easy)](https://leetcode.com/problems/binary-search/)
+Given an array of integers nums which is sorted in ascending order, and an integer target, write a function to search target in nums. If target exists, then return its index. Otherwise, return -1.
+
+You must write an algorithm with O(log n) runtime complexity.
+```java
+// note: code is from an old answer for nums in ascending order
+// to swap code to descending, check if first element is larger than last element
+public int search(int[] nums, int target) {
+    return search(nums, target, 0, nums.length);
+}
+
+private int search(int[] nums, int target, int start, int end) {
+    // return if empty
+    if (nums.length == 0) {
+        return -1;
+    }
+    
+    // return if singular element isn't target
+    if (end - start <= 1 && nums[start] != target) {
+        return -1;
+    }
+    
+    // find pivot point between start and end
+    int pivot = start + (end - start) / 2;
+    System.out.println("start=" + start + ", pivot=" + pivot + ", end=" + end);
+    
+    // if pivot is target, return pivot
+    if (nums[pivot] == target) return pivot;
+    
+    // if nums[pivot] is greater than target
+    if (nums[pivot] > target) {
+        // go left
+        return search(nums, target, start, pivot - 1);
+    }
+    // if nums[pivot] is less than target
+    else {
+        // go right
+        return search(nums, target, pivot, end - 1);
+    }
+}
+```
+
+### [Search in a Sorted, Infinite Array (medium)](https://www.geeksforgeeks.org/find-position-element-sorted-array-infinite-numbers/)
+Suppose you have a sorted array of infinite numbers, how would you search an element in the array?
+```java
+// this problem is theoretical, assume you do not have access to array.length
+// like a binary search, but every time you're too small, double the number of the "end"
+```
+
+## 12. Top K Elements
 ### Overview
+All problems that ask to find the top/smallest/most frequent K elements among a set. Use a heap.
 ### Common Signs
+* Asked to find top/smallest/most frequent K elements of a set
+* Asked to sort an array to find an exact element
 ### Code Template
 ### Example Problems
+### [Top K Elements (easy)]()
+Not found.
+### [Top K Freqent Elements (medium)](https://leetcode.com/problems/top-k-frequent-elements/)
+```java
+public int[] topKFrequent(int[] nums, int k) {
+    // map all occurrences of nums
+    Map<Integer, Integer> freq = new TreeMap<>();
+    for (int n : nums) {
+        freq.put(n, freq.getOrDefault(n, 0) + 1);
+    }
+    
+    // sort in pq by occurrences
+    PriorityQueue<Integer> pq = new PriorityQueue<>((a, b) -> (freq.get(b) - freq.get(a)));
+    pq.addAll(freq.keySet());
+    
+    // get k most common elements
+    int[] ans = new int[k];
+    for (int i = 0; i < k; i++) {
+        ans[i] = pq.poll();
+    }
+    return ans;
+}
+```
+## 13. K-Way Merge
+### Overview
+Problems that involve sets of sorted arrays. Use a Heap to traverse multiple arrays in order.
+### Common Signs
+* Problem has multiple sorted arrays
+* Problem asks to merge or find smallest element among them
+### Code Template
+See Example Problem 1.
+
+### Example Problems
+### [Merge k Sorted Lists (hard)](https://leetcode.com/problems/merge-k-sorted-lists/)
+```java
+public ListNode mergeKLists(ListNode[] lists) {
+    // ignore bad
+    if (lists == null || lists.length == 0) return null;
+    
+    // PQ
+    PriorityQueue<ListNode> pq = new PriorityQueue<>((a, b) -> {
+        return a.val - b.val;
+    });
+    
+    // ans
+    ListNode ans = new ListNode(-1);
+    ListNode last = ans;
+    
+    // start pq with heads of all lists
+    for (ListNode head : lists) {
+        if (head != null) pq.add(head);
+    }
+    
+    // until there are no nodes remaining
+    while (!pq.isEmpty()) {
+        // attach the min node to the ans list
+        last.next = pq.poll();
+        last = last.next;
+        
+        // add the next node of the original list of that node
+        // to the queue
+        if (last.next != null) pq.add(last.next);
+    }
+    
+    // return ans
+    return ans.next;
+}
+```
+
+### [Find K Pairs With Smallest Sums (medium)](https://leetcode.com/problems/find-k-pairs-with-smallest-sums/)
+You are given two integer arrays nums1 and nums2 sorted in ascending order and an integer k.
+
+Define a pair (u, v) which consists of one element from the first array and one element from the second array.
+
+Return the k pairs (u1, v1), (u2, v2), ..., (uk, vk) with the smallest sums.
+
+Couldn't get this one to work because the method signatures were different but the same concepts. (Discussion)[https://leetcode.com/problems/find-k-pairs-with-smallest-sums/discuss/84551/simple-Java-O(KlogK)-solution-with-explanation].
+```java
+public class Solution {
+    public List<int[]> kSmallestPairs(int[] nums1, int[] nums2, int k) {
+        PriorityQueue<int[]> que = new PriorityQueue<>((a,b)->a[0]+a[1]-b[0]-b[1]);
+        List<int[]> res = new ArrayList<>();
+        if(nums1.length==0 || nums2.length==0 || k==0) return res;
+        for(int i=0; i<nums1.length && i<k; i++) que.offer(new int[]{nums1[i], nums2[0], 0});
+        while(k-- > 0 && !que.isEmpty()){
+            int[] cur = que.poll();
+            res.add(new int[]{cur[0], cur[1]});
+            if(cur[2] == nums2.length-1) continue;
+            que.offer(new int[]{cur[0],nums2[cur[2]+1], cur[2]+1});
+        }
+        return res;
+    }
+}
+```
+
+## 14. Topological Sort
+### Overview
+Problems where finding the linear odering of elements that have dependencies on each other. Useful in a graph situation.
+
+### Common Signs
+* Problem input is a graph with no directed cycles
+* Asked to update all objects in a sorted order
+* Have a class of objects following a particular order
+
+### Code Template
+```
+1. Store all nodes in a min PriorityQueue sorted by degree (how many nodes point towards this one)
+2. Remove top node, add to a list
+3. Decrease degree of all nodes it points to by 1
+4. Repeat until all nodes are removed
+```
+
+### Example Problems
+### [Minimum Height Trees (medium)](https://leetcode.com/problems/minimum-height-trees/)
+```java
+public List<Integer> findMinHeightTrees(int n, int[][] edges) {
+    // if height 1 return 0
+    if (n == 1) return Collections.singletonList(0);
+
+    // create adjacency table from edges
+    List<Set<Integer>> adj = new ArrayList<>(n);
+    for (int i = 0; i < n; ++i) adj.add(new HashSet<>());
+    for (int[] edge : edges) {
+        adj.get(edge[0]).add(edge[1]);
+        adj.get(edge[1]).add(edge[0]);
+    }
+
+    // find all leaves in graph
+    List<Integer> leaves = new ArrayList<>();
+    for (int i = 0; i < n; ++i)
+        if (adj.get(i).size() == 1) leaves.add(i);
+
+    // chop off leaves until we're left with the very last nodes
+    while (n > 2) {
+        // remove leaves.size() nodes from the pool
+        n -= leaves.size();
+
+        // next set of leaves
+        List<Integer> newLeaves = new ArrayList<>();
+
+        // for each leaf
+        for (int i : leaves) {
+            // get its neighbors and add to new list
+            int j = adj.get(i).iterator().next();
+            adj.get(j).remove(i);
+            if (adj.get(j).size() == 1) newLeaves.add(j);
+        }
+
+        // set new list
+        leaves = newLeaves;
+    }
+    return leaves;
+}
+```
