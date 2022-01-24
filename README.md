@@ -684,6 +684,13 @@ public int[][] merge(int[][] intervals) {
 
 ### Example Problems
 ### (Intervals Intersection (medium))[https://leetcode.com/problems/interval-list-intersections/]
+You are given two lists of closed intervals, firstList and secondList, where firstList[i] = [starti, endi] and secondList[j] = [startj, endj]. Each list of intervals is pairwise disjoint and in sorted order.
+
+Return the intersection of these two interval lists.
+
+A closed interval [a, b] (with a <= b) denotes the set of real numbers x with a <= x <= b.
+
+The intersection of two closed intervals is a set of real numbers that are either empty or represented as a closed interval. For example, the intersection of [1, 3] and [2, 4] is [2, 3].
 ```java
 public int[][] intervalIntersection(int[][] a, int[][] b) {
     // if either list is empty return empty
@@ -720,6 +727,11 @@ public int[][] intervalIntersection(int[][] a, int[][] b) {
 }
 ```
 ### (Task Scheduler (hard))[https://leetcode.com/problems/task-scheduler/]
+Given a characters array tasks, representing the tasks a CPU needs to do, where each letter represents a different task. Tasks could be done in any order. Each task is done in one unit of time. For each unit of time, the CPU could complete either one task or just be idle.
+
+However, there is a non-negative integer n that represents the cooldown period between two same tasks (the same letter in the array), that is that there must be at least n units of time between any two same tasks.
+
+Return the least number of units of times that the CPU will take to finish all the given tasks.
 ```java
 // this one's just mathematics
 public int leastInterval(char[] tasks, int n) {
@@ -749,41 +761,510 @@ public int leastInterval(char[] tasks, int n) {
 }
 ```
 
-## 5.
+## 5. Cyclic Sort
 ### Overview
+Cyclic Sort problems will deal with arrays containing numbers of a given range. Iterate over each element, swapping it into its correct place.
 ### Common Signs
+* Input is a sorted array, with numbers in a given range
+* Problem asks to find missing, duplicate, or smallest number in a sorted or rotated array
 ### Code Template
-### Example Problems
+```java
+public int cyclicSort(int[] nums) {
+    // for all indecies
+    for (int i = 0; i < nums.length; i++) {
+        // while an element isn't in its proper position
+        while (nums[i] != i) {
+            // keep swaping it to its right position
+            int n = nums[i];
+            if (n == nums.length) break;
+            int temp = nums[n];
+            nums[n] = n;
+            nums[i] = temp;
+        }
+    }
 
-## 6.
-### Overview
-### Common Signs
-### Code Template
-### Example Problems
+    // return the number still out of place
+    for (int i = 0; i < nums.length; i++) {
+        if (nums[i] != i) return i;
+    }
 
-## 7.
-### Overview
-### Common Signs
-### Code Template
+    // return the last possible index
+    return nums.length;
+}
+```
 ### Example Problems
+### [Find the Missing Number (easy)](https://leetcode.com/problems/missing-number/)
+Given an array nums containing n distinct numbers in the range [0, n], return the only number in the range that is missing from the array.
+```java
+public int missingNumber(int[] nums) {
+    // swap each number to its proper spot
+    for (int i = 0; i < nums.length; i++) {
+        while (nums[i] != i) {
+            // swap n to right place
+            int n = nums[i];
+            // if n is the last number, don't swap it
+            if (n == nums.length) break;
+            int t = nums[n];
+            nums[n] = n;
+            nums[i] = t;
+        }
+    }
+    
+    // find out which element isn't in the right place
+    for (int i = 0; i < nums.length; i++) {
+        if (nums[i] != i) {
+            return i;
+        }
+    }
+    
+    // return the last index if we got here
+    return nums.length;
+}
+```
+### [Find the Smallest Missing Positive Number (medium)](https://leetcode.com/problems/first-missing-positive/)
+Given an unsorted integer array nums, return the smallest missing positive integer.
 
-## 8.
-### Overview
-### Common Signs
-### Code Template
-### Example Problems
+You must implement an algorithm that runs in O(n) time and uses constant extra space.
+```java
+public int firstMissingPositive(int[] nums) {
+    // swap all numbers to their right places
+    for (int i = 0; i < nums.length; i++) {
+        // only perform on positive numbers between 1 and n,
+        // while nums aren't in the correct place
+        while (nums[i] > 0 && nums[i] <= nums.length && nums[nums[i] - 1] != nums[i]) {
+            swap(nums, i, nums[i] - 1);
+        }
+    }
+    
+    // search for first missing positive
+    for (int i = 0; i < nums.length; i++) {
+        if (nums[i] != i + 1) return i + 1;
+    }
+    
+    // if none was found in array, return the length of the array
+    return nums.length + 1;
+}
 
-## 9.
-### Overview
-### Common Signs
-### Code Template
-### Example Problems
+private void swap(int[] nums, int i, int j) {
+    int t = nums[i];
+    nums[i] = nums[j];
+    nums[j] = t;
+}
+```
 
-## 10.
+## 6. In-place Reversal of LinkedList
 ### Overview
+Reverse a LinkedList without use of extra data structures.
 ### Common Signs
+* You are asked to reverse a LinkedList without extra data structures.
+### Code Template
+```java
+public ListNode reverse(ListNode head) {
+    ListNode prev = null;
+    while (head != null) {
+        ListNode next = head.next;
+        head.next = prev;
+        prev = head;
+        head = next;
+    }
+    return prev;
+}
+```
+
+### Example Problems
+### [Reverse a Sub-list (medium)](https://leetcode.com/problems/reverse-linked-list-ii/)
+Given the head of a singly linked list and two integers left and right where left <= right, reverse the nodes of the list from position left to position right, and return the reversed list.
+```java
+public ListNode reverseBetween(ListNode head, int m, int n) {
+    // sentinel points to the head of the list at all times
+    ListNode sentinel = new ListNode(-1);
+    sentinel.next = head;
+
+    // find the head of the sublist to reverse
+    ListNode prev = sentinel;
+    ListNode curr = sentinel.next;
+    int i = 1;
+    for (; i < m; i++) {
+        prev = curr;
+        curr = curr.next;
+    }
+    // prev now points to the node before the sublist to reverse
+    // curr now points to the first node of the sublist to reverse
+    // subhead will point to the node that proceeds the sublist
+    ListNode subhead = prev;
+
+    // perform pair-wise swaps until i = n
+    for (; i <= n; i++) {
+        ListNode temp = curr.next;
+        curr.next = prev;
+        prev = curr;
+        curr = temp;
+    }
+
+    // reattach the reversed list to the main list
+    subhead.next.next = curr;
+    subhead.next = prev;
+
+    // return the head of the original list
+    return sentinel.next;
+}
+```
+### [Reverse Every K-Element Sublist](https://leetcode.com/problems/reverse-nodes-in-k-group/)
+Given the head of a linked list, reverse the nodes of the list k at a time, and return the modified list.
+
+k is a positive integer and is less than or equal to the length of the linked list. If the number of nodes is not a multiple of k then left-out nodes, in the end, should remain as it is.
+
+You may not alter the values in the list's nodes, only nodes themselves may be changed.
+```java
+public ListNode reverseKGroup(ListNode head, int k) {
+    // ignore empty, singular, or swap 1 list
+    if (head == null || head.next == null || k == 1) return head;
+    
+    // sentinel to keep track of list
+    ListNode sentinel = new ListNode(-1);
+    sentinel.next = head;
+    
+    // the start of a sublist
+    ListNode start = sentinel;
+    int i = 0;
+    while (head != null) {
+        i++;
+        // if this is the start of a sublist
+        if (i % k == 0) {
+            // reverse the sublist from start to head.next
+            start = reverse(start, head.next);
+            
+            // traverse
+            head = start.next;
+        } 
+        
+        // otherwise keep traversing
+        else {
+            head = head.next;
+        }
+    }
+    
+    // return the list
+    return sentinel.next;
+}
+
+// reverses a LinkedList between two nodes, exclusive
+private ListNode reverse(ListNode start, ListNode end) {
+    ListNode curr = start.next;
+    ListNode prev = start;
+    ListNode next = null;
+    ListNode first = curr;
+    while (curr != end) {
+        next = curr.next;
+        curr.next = prev;
+        prev = curr;
+        curr = next;
+    }
+    start.next = prev;
+    first.next = curr;
+    return first;
+}
+```
+## 7. Tree BFS
+### Overview
+Problem will ask you to traverse a tree on a level-by-level basis. Use a Queue. For each node, read the head node, and add its children to the end of the queue.
+### Common Signs
+* You're asked to traverse a tree level-by-level
 ### Code Template
 ### Example Problems
+### [Binary Tree Level Order Traversal (easy)](https://leetcode.com/problems/binary-tree-level-order-traversal/)
+```java
+public List<List<Integer>> levelOrder(TreeNode root) {
+    List<List<Integer>> ans = new LinkedList<>();
+    Queue<TreeNode> queue = new LinkedList<>();
+    traverse(root, ans, queue, 0);
+    return ans;
+}
+
+private void traverse(TreeNode root, List<List<Integer>> ans, Queue<TreeNode> queue, int level) {
+    // if root is null do nothing
+    if (root == null) return;
+    
+    // add all root's children to queue
+    if (root.left != null) queue.add(root.left);
+    if (root.right != null) queue.add(root.right);
+    
+    // add this node to the answer in its level's list
+    if (ans.size() == level) {
+        ans.add(new LinkedList<Integer>());
+    }
+    ans.get(level).add(root.val);
+        
+    // add children to answer
+    traverse(root.left, ans, queue, level + 1);
+    traverse(root.right, ans, queue, level + 1);
+}
+```
+### [Zigzag Traversal (medium)](https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/)
+```java
+// same thing as Binary Tree Level Order Traversal, except with an edit to the child order
+public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+    List<List<Integer>> ans = new LinkedList<>();
+    Queue<TreeNode> queue = new LinkedList<>();
+    traverse(root, ans, queue, 0);
+    return ans;
+}
+
+private void traverse(TreeNode root, List<List<Integer>> ans, Queue<TreeNode> queue, int level) {
+    // if root is null do nothing
+    if (root == null) return;
+
+    // add all root's children to queue
+    if (root.left != null) queue.add(root.left);
+    if (root.right != null) queue.add(root.right);
+
+    // add this node to the answer in its level's list
+    if (ans.size() == level) {
+        ans.add(new LinkedList<Integer>());
+    }
+    
+    // if odd level, insert at beginning
+    // if even level, insert at end
+    if (level % 2 == 1) {
+        ans.get(level).add(0, root.val);
+    }
+    else {
+        ans.get(level).add(root.val);
+    }
+
+    // add children to answer
+    traverse(root.left, ans, queue, level + 1);
+    traverse(root.right, ans, queue, level + 1);
+}
+```
+
+## 8. Tree DFS
+### Overview
+Problem will ask you to traverse a tree Pre-Order (parent, left child, right child), In-Order (left child, parent, right child), or Post-Order (left child, right child, parent)
+### Common Signs
+* Asked to traverse a tree with In-Order, Pre-Order, or Post-Order DFS
+* Problem requires searching for something where a node is closer to a leaf
+### Code Template
+```java
+public List<Integer> treeDFS(TreeNode root) {
+    // list to store numbers    
+    List<Integer> preOrder = treePreOrder(root, new LinkedList<>());
+    List<Integer> inOrder = treeInOrder(root, new LinkedList<>());
+    List<Integer> postOrder = treePostOrder(root, new LinkedList<>());
+    return inOrder;
+}
+
+private void treePreOrder(TreeNode root, List<Integer> list) {
+    if (root == null) return;
+    list.add(root.val);
+    treeInOrder(root.left, list);
+    treeInOrder(root.right, list);
+}
+
+private void treeInOrder(TreeNode root, List<Integer> list) {
+    if (root == null) return;
+    treeInOrder(root.left, list);
+    list.add(root.val);
+    treeInOrder(root.right, list);
+}
+
+private void treePostOrder(TreeNode root, List<Integer> list) {
+    if (root == null) return;
+    treeInOrder(root.left, list);
+    treeInOrder(root.right, list);
+    list.add(root.val);
+}
+```
+
+### Example Problems
+### [Sum of Path Numbers (medium)](https://leetcode.com/problems/sum-root-to-leaf-numbers/)
+```java
+public int sumNumbers(TreeNode root) {
+    return sumNumbers(root, 0);
+}
+
+public int sumNumbers(TreeNode root, int sum) {
+    // if root is null return 0
+    if (root == null) return 0;
+    
+    // if leaf, return sum * 10 plus value
+    if (root.right == null && root.left == null) return sum * 10 + root.val;
+    
+    // otherwise, return sum of children
+    return sumNumbers(root.left, sum * 10 + root.val) + sumNumbers(root.right, sum * 10 + root.val);
+}
+```
+### [All Paths for a Sum (medium)](https://leetcode.com/problems/path-sum-ii/)
+```java
+public List<List<Integer>> pathSum(TreeNode root, int targetSum) {
+    List<List<Integer>> paths = new ArrayList<>();
+    List<Integer> currentPath = new ArrayList<>();
+    pathSum(root, targetSum, currentPath, paths);
+    return paths;
+}
+
+void pathSum(TreeNode root, int sum, List<Integer> path, List<List<Integer>> results) {
+    // if null, do nothing
+    if (root == null) return;
+    
+    // add the value to this path
+    path.add(root.val);
+    
+    // if this is a leaf, add this path to results if the sum is correct
+    if (root.right == null && root.left == null && sum == root.val) {
+        // add path to results
+        results.add(new LinkedList<>(path)); // copy to not interfere with further paths
+    }
+    
+    // otherwise traverse left and right
+    else {
+        pathSum(root.left, sum - root.val, path, results);
+        pathSum(root.right, sum - root.val, path, results);
+    }
+    
+    // once this subtree is done, remove this val from path
+    path.remove(path.size() - 1);
+}
+```
+
+## 9. Two Heaps
+### Overview
+Problems that give a set of elements that can be divided into two parts, one of which we want the greatest element and the other the smallest. When this occurs, the median will be calculated from the tops of both heaps.
+### Common Signs
+* Mentions Priority Queue or Scheduling
+* Problem asks to find smallest/largest/median of elements
+* Sometimes useful for dealing with binary trees
+### Example Problems
+### [Find the Median of a Number Stream (medium)](https://leetcode.com/problems/find-median-from-data-stream/)
+The median is the middle value in an ordered integer list. If the size of the list is even, there is no middle value and the median is the mean of the two middle values.
+
+For example, for arr = [2,3,4], the median is 3.
+For example, for arr = [2,3], the median is (2 + 3) / 2 = 2.5.
+Implement the MedianFinder class:
+
+MedianFinder() initializes the MedianFinder object.
+void addNum(int num) adds the integer num from the data stream to the data structure.
+double findMedian() returns the median of all elements so far. Answers within 10-5 of the actual answer will be accepted.
+```java
+class MedianFinder {
+    
+    // two heaps
+    // to reverse a PriorityQueue, use Collections.reverseOrder()
+    // in the constructor
+    Queue<Long> maxHeap = new PriorityQueue<>(Collections.reverseOrder());
+    Queue<Long> minHeap = new PriorityQueue<>();
+    
+    public void addNum(int num) {
+        // add it to the max heap
+        maxHeap.add((long) num);
+        
+        // then move it from the max heap to the min heap
+        minHeap.add(maxHeap.poll());
+        
+        // if the max heap is smaller than the min heap
+        // add it back to the max heap
+        if (maxHeap.size() < minHeap.size()) {
+            maxHeap.add(minHeap.poll());
+        }
+    }
+    
+    public double findMedian() {
+        // if the max heap is larger, return the top value
+        // otherwise return the average of both heaps
+        return maxHeap.size() > minHeap.size() 
+            ? maxHeap.peek() 
+            : (maxHeap.peek() + minHeap.peek()) / 2.0;
+    }
+}
+```
+
+## 10. Subsets
+### Overview
+Problems dealing with permutations or combinations of a given set of elements. The BFS pattern described here can handle these problems.
+### Common Signs
+* Asked to find combinations or permutations of a set
+### Code Template
+
+### Example Problems
+### [Subsets Without Duplicates (medium)](https://leetcode.com/problems/subsets-ii/)
+Given an integer array nums that may contain duplicates, return all possible subsets (the power set).
+
+The solution set must not contain duplicate subsets. Return the solution in any order.
+```java
+public List<List<Integer>> subsetsWithDup(int[] nums) {
+    // sort list to find duplicates
+    Arrays.sort(nums);
+    
+    // list to store subsets
+    List<List<Integer>> subsets = new LinkedList<>();
+    
+    // recurse
+    f(subsets, new LinkedList<>(), nums, 0);
+    
+    // return
+    return subsets;
+}
+
+private void f(List<List<Integer>> res, List<Integer> ls, int[] nums, int pos) {
+    // add a copy of the current state of the list to the results
+    res.add(new LinkedList<>(ls));
+    
+    // for each remaining element in nums
+    for (int i = pos; i < nums.length; i++) {
+        // skip over duplicates
+        if (i > pos && nums[i] == nums[i - 1]) continue;
+        
+        // add this element to the list
+        ls.add(nums[i]);
+        
+        // add all subsets with this list
+        f(res, ls, nums, i + 1);
+        
+        // remove the last element from the list
+        ls.remove(ls.size() - 1);
+    }
+}
+```
+### [String Permutations by Changing Case (medium)](https://leetcode.com/problems/letter-case-permutation/)
+Given a string s, you can transform every letter individually to be lowercase or uppercase to create another string.
+
+Return a list of all possible strings we could create. Return the output in any order.
+```java
+// using a BFS solution
+public List<String> letterCasePermutation(String s) {
+    // return if s is null
+    if (s == null) return Collections.emptyList();
+    
+    // queue
+    Queue<String> queue = new LinkedList<>();
+    queue.add(s);
+    
+    // for the length of the string
+    for (int i = 0; i < s.length(); i++) {
+        // skip if digit
+        if (Character.isDigit(s.charAt(i))) continue;
+        
+        // for the rest of the queue
+        int size = queue.size();
+        for (int j = 0; j < size; j++) {
+            // get the chars of the next string
+            String cur = queue.poll();
+            char[] chs = cur.toCharArray();
+            
+            // put both permutations of this char in upper and lower case
+            // back into the queue
+            chs[i] = Character.toUpperCase(chs[i]);
+            queue.offer(String.valueOf(chs));
+            
+            chs[i] = Character.toLowerCase(chs[i]);
+            queue.offer(String.valueOf(chs));
+        }
+    }
+    
+    // return the list of Strings, from the Queue
+    return new LinkedList<>(queue);
+}
+```
 
 ## 11.
 ### Overview
