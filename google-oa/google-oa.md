@@ -721,3 +721,77 @@ public static int decreasingSubsequence(int[] arr) {
     return subs.size();
 }
 ```
+
+## [Stores and Houses](https://leetcode.com/discuss/interview-question/350248/Google-or-Summer-Intern-OA-2019-or-Stores-and-Houses)
+You are given 2 arrays representing integer locations of stores and houses (each location in this problem is one-dementional). For each house, find the store closest to it.
+Return an integer array result where result[i] should denote the location of the store closest to the i-th house. If many stores are equidistant from a particular house, choose the store with the smallest numerical location. Note that there may be multiple stores and houses at the same location.
+```java
+public static void main(String[] args) {
+    List<int[]> housesInputs = new LinkedList<>();
+    housesInputs.add(new int[]{5, 10, 17});
+    housesInputs.add(new int[]{2, 4, 2});
+    housesInputs.add(new int[]{4, 8, 1, 1});
+    List<int[]> storesInputs = new LinkedList<>();
+    storesInputs.add(new int[]{1, 5, 20, 11, 16});
+    storesInputs.add(new int[]{5, 1, 2, 3});
+    storesInputs.add(new int[]{5, 3, 1, 2, 6});
+    for (int i = 0; i < housesInputs.size(); i++) {
+        System.out.println(Arrays.toString(solve(housesInputs.get(i), storesInputs.get(i))));
+    }
+}
+
+public static int[] solve(int[] houses, int[] stores) {
+    // answer
+    int[] ans = new int[houses.length];
+    
+    // sort the stores list
+    Arrays.sort(stores);
+    
+    // for each house
+    for (int i = 0; i < houses.length; i++) {
+        // the house
+        int h = houses[i];
+        
+        // the distance to the closest store
+        int minDist = Integer.MAX_VALUE;
+        
+        // the closest store
+        int s = 0;
+        
+        // do a binary search to find the closest store
+        int lo = 0;
+        int hi = stores.length - 1;
+        while (lo <= hi) {
+            // calculate midpoint
+            int mid = lo + (hi - lo) / 2;
+            
+            // if stores[mid] is at house, break
+            if (stores[mid] == h) {
+                s = h;
+                break;
+            }
+            
+            // otherwise, calculate distance to store
+            int dist = Math.abs(h - stores[mid]);
+            
+            // if new min, set minDist and store
+            if (dist < minDist) {
+                // set new min
+                minDist = dist;
+                s = stores[mid];
+            }
+            
+            // if store was before house, move up
+            if (stores[mid] < h) {
+                lo = mid + 1;
+            }
+            // if store was after house, move down
+            else {
+                hi = mid - 1;
+            }
+        }
+        ans[i] = s;
+    }
+    return ans;
+}
+```
