@@ -4,16 +4,16 @@
 2. [Two Pointers](#2-two-pointers)
 3. [Fast Pointer, Slow Pointer](#3-fast-and-slow-pointers)
 4. [Merge Intervals](#4-merge-intervals)
-5. Cyclic Sort 
-6. Reverse LinkedList
-7. Tree BFS
-8. Tree DFS
-9. Two Heaps
-10. Subset
-11. Modified Binary Search
-12. Top K Elements
-13. K-Way Merge
-14. Topological Sort
+5. [Cyclic Sort](#5-cyclic-sort) 
+6. [Reverse LinkedList](#6-in-place-reversal-of-linkedlist)
+7. [Tree BFS](#7-tree-bfs)
+8. [Tree DFS](#8-tree-dfs)
+9. [Two Heaps](#9-two-heaps)
+10. [Subset](#10-subsets)
+11. [Modified Binary Search](#11-modified-binary-search)
+12. [Top K Elements](#12-top-k-elements)
+13. [K-Way Merge](#13-k-way-merge)
+14. [Topological Sort](#14-topological-sort)
 
 ## 1. Sliding Window
 ### Overview
