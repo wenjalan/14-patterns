@@ -973,6 +973,7 @@ Problem will ask you to traverse a tree on a level-by-level basis. Use a Queue. 
 ### Code Template
 ### Example Problems
 ### [Binary Tree Level Order Traversal (easy)](https://leetcode.com/problems/binary-tree-level-order-traversal/)
+Given the root of a binary tree, return the level order traversal of its nodes' values. (i.e., from left to right, level by level).
 ```java
 public List<List<Integer>> levelOrder(TreeNode root) {
     List<List<Integer>> ans = new LinkedList<>();
