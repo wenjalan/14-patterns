@@ -749,3 +749,137 @@ public int[][] insert(int[][] intervals, int[] newInterval) {
     return answer.toArray(new int[answer.size()][]);
 }
 ```
+
+## [Contains Duplicate](https://leetcode.com/problems/contains-duplicate/)
+Given an integer array nums, return true if any value appears at least twice in the array, and return false if every element is distinct.
+
+```java
+class Solution {
+    public boolean containsDuplicate(int[] nums) {
+        // with a Set
+        Set<Integer> ints = new HashSet<>();
+        for (int n : nums) {
+            if (ints.contains(n)) return true;
+            ints.add(n);
+        }
+        return false;
+    }
+}
+```
+
+## [Product of Array Except Self](https://leetcode.com/problems/product-of-array-except-self/)
+```java
+class Solution {
+    public int[] productExceptSelf(int[] nums) {
+        // calculate the total product of the array
+        int totalProduct = 1;
+        int zeroCount = 0;
+        for (int n : nums) {
+            if (n == 0) zeroCount++;
+            totalProduct *= n;
+        }
+        
+        // create a new array to store answer
+        int[] ans = new int[nums.length];
+        
+        // if there are two zeros, return ans
+        if (zeroCount >= 2) {
+            return ans;
+        }
+        
+        // populate ans[i] with the totalProduct / nums[i]
+        for (int i = 0; i < ans.length; i++) {
+            // if this is the single zero, recalculate
+            if (nums[i] == 0) {
+                int product = 1;
+                for (int j = 0; j < ans.length; j++) {
+                    if (j == i) continue;
+                    product *= nums[j];
+                }
+                ans[i] = product;
+            }
+            else {
+                ans[i] = totalProduct / nums[i];
+            }
+        }
+        
+        // return
+        return ans;
+    }
+}
+```
+
+## [Maximum Product Subarray](https://leetcode.com/problems/maximum-product-subarray/)
+```java
+class Solution {
+    public int maxProduct(int[] nums) {
+        int max = nums[0];
+        int left = 1;
+        int right = 1;
+        
+        for (int i = 0; i < nums.length; i++) {
+            // if left or right turned to 0, reset to 1
+            if (left == 0) left = 1;
+            if (right == 0) right = 1;
+            
+            // update running products
+            left *= nums[i];
+            right *= nums[nums.length - 1 - i];
+            
+            // update max
+            max = Math.max(max, Math.max(left, right));
+        }
+        
+        return max;
+    }
+}
+```
+
+## [Find Minimum in Sorted Array](https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/)
+```java
+class Solution {
+    public int findMin(int[] nums) {
+        int lo = 0;
+        int hi = nums.length - 1;
+        while (lo < hi) {
+            int mid = (lo + hi) / 2;
+            // if nums[mid] is greater than nums[hi]
+            if (nums[mid] > nums[hi]) {
+                // move search upwards
+                lo = mid + 1;
+            }
+            // if nums[mid] is less than nums[hi]
+            else {
+                // move search downwards
+                hi = mid;
+            }
+        }
+        System.out.println("offset: " + lo);
+        // return lo
+        return nums[lo];
+    }
+}
+```
+
+## [Container with Most Water](https://leetcode.com/problems/container-with-most-water/)
+```java
+class Solution {
+    public int maxArea(int[] height) {
+        int left = 0;
+        int right = height.length - 1;
+        int maxArea = Math.min(height[left], height[right]) * (right - left);
+        while (right >= left) {
+            int area = Math.min(height[left], height[right]) * (right - left);
+            System.out.println("[" + left + ", " + right + "], area: " + area);
+            maxArea = Math.max(area, maxArea);
+            if (height[left] < height[right]) {
+                left++;
+            }
+            else {
+                right--;
+            }
+        }
+        return maxArea;
+    }
+}
+```
