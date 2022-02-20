@@ -1512,3 +1512,95 @@ public List<Integer> findMinHeightTrees(int n, int[][] edges) {
     return leaves;
 }
 ```
+
+## [Merge Two Sorted Lists](https://leetcode.com/problems/merge-two-sorted-lists/submissions/)
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
+        ListNode head = new ListNode();
+        ListNode p0 = head;
+        ListNode p1 = list1;
+        ListNode p2 = list2;
+        while (p1 != null && p2 != null) {
+            if (p1.val <= p2.val) {
+                p0.next = p1;
+                p1 = p1.next;
+            }
+            else {
+                p0.next = p2;
+                p2 = p2.next;
+            }
+            p0 = p0.next;
+        }
+        
+        while (p1 != null) {
+            p0.next = p1;
+            p1 = p1.next;
+            p0 = p0.next;
+        }
+        
+        while (p2 != null) {
+            p0.next = p2;
+            p2 = p2.next;
+            p0 = p0.next;
+        }
+        
+        return head.next;
+    }
+}
+```
+
+## [Remove nth From End](https://leetcode.com/problems/remove-nth-node-from-end-of-list/)
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        // sentinel
+        ListNode sent = new ListNode(-1);
+        sent.next = head;
+
+        // p1 is positioned before the node to skip
+        ListNode p1 = sent; 
+
+        // p2 is used to find the end of the list
+        ListNode p2 = sent;
+
+        // advance p2 to n away from p1
+        while (n > 0) {
+            p2 = p2.next;
+            n--;
+        }
+
+        // advance both pointers until p2 reaches end
+        while (p2.next != null) {
+            p1 = p1.next;
+            p2 = p2.next;
+        }
+
+        // skip a node
+        p1.next = p1.next.next;
+
+        // return sent
+        return sent.next;
+    }
+}
+```

@@ -702,7 +702,7 @@ private void nukeIsland(int i, int j) {
 }
 ```
 
-## [Insert Interval]()
+## [Insert Interval](https://leetcode.com/problems/insert-interval/)
 You are given an array of non-overlapping intervals intervals where intervals[i] = [starti, endi] represent the start and the end of the ith interval and intervals is sorted in ascending order by starti. You are also given an interval newInterval = [start, end] that represents the start and end of another interval.
 
 Insert newInterval into intervals such that intervals is still sorted in ascending order by starti and intervals still does not have any overlapping intervals (merge overlapping intervals if necessary).
@@ -880,6 +880,40 @@ class Solution {
             }
         }
         return maxArea;
+    }
+}
+```
+
+## [Merge Intervals](https://leetcode.com/problems/merge-intervals/)
+```java
+class Solution {
+    public int[][] merge(int[][] intervals) {
+        // sort intervals
+        Arrays.sort(intervals, (int1, int2) -> {
+            return int1[0] - int2[0];
+        });
+        
+        // create new intervals
+        ArrayList<int[]> newIntervals = new ArrayList<>();
+        int[] newInterval = intervals[0];
+        for (int i = 1; i < intervals.length; i++) {
+            // if this interval begins after the newInterval ends, add the newInterval
+            int[] interval = intervals[i];
+            if (newInterval[1] < interval[0]) {
+                newIntervals.add(newInterval);
+                newInterval = interval;
+            }
+            // otherwise merge this interval with that one
+            else {
+                newInterval[1] = Math.max(newInterval[1], interval[1]);
+            }
+        }
+        
+        // add the last interval
+        newIntervals.add(newInterval);
+        
+        // return the intervals
+        return newIntervals.toArray(new int[newIntervals.size()][2]);
     }
 }
 ```
